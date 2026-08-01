@@ -1,6 +1,6 @@
 {
   "name": "pi-image-drop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pi extension that turns terminal-dropped image paths into inline image attachments",
   "type": "module",
   "license": "MIT",
