@@ -1,0 +1,40 @@
+{
+  "name": "pi-image-drop",
+  "version": "0.1.0",
+  "description": "Pi extension that turns terminal-dropped image paths into inline image attachments",
+  "type": "module",
+  "license": "MIT",
+  "author": "TommyFork",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TommyFork/pi-image-drop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TommyFork/pi-image-drop/issues"
+  },
+  "homepage": "https://github.com/TommyFork/pi-image-drop#readme",
+  "keywords": [
+    "pi-package",
+    "pi-coding-agent",
+    "pi-extension",
+    "image",
+    "terminal"
+  ],
+  "files": [
+    "extensions",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2"
+  }
+}
