@@ -74,19 +74,6 @@ pi -e ./extensions/image-drop.ts
 
 A dropped path that cannot be read or processed remains ordinary text when submitted.
 
-## Security and privacy
-
-Pi extensions execute with the permissions of the current user. Review the source before installing third-party extensions.
-
-This extension reads only image paths supplied through terminal input and does not upload images itself. The resulting attachment is sent wherever the active Pi model/provider sends user input. Files are limited to 50 MB and are validated by their contents before processing.
-
-## Limitations
-
-- Image processing currently uses Pi's internal `utils/image-process.js` module, which is not a stable public extension API and may require updates as Pi changes.
-- Immediate editor replacement is designed for a dropped path supplied as a standalone terminal paste. Recognizable paths embedded in ordinary prose are handled when the prompt is submitted.
-- The current implementation targets local absolute paths, `~/...`, and `file://...` URLs.
-- The extension currently supports PNG, JPEG, GIF, WebP, and BMP files.
-
 ## Development
 
 The extension is loaded directly as TypeScript by Pi and has no build step.
@@ -102,10 +89,6 @@ Before opening a pull request, verify the package contents:
 ```bash
 npm pack --dry-run
 ```
-
-## Contributing
-
-Issues and pull requests are welcome at [github.com/TommyFork/pi-image-drop](https://github.com/TommyFork/pi-image-drop). Please include the Pi version, terminal application, operating system version, and a minimal reproduction for parsing or attachment problems.
 
 ## License
 
