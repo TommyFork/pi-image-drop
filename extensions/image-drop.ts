@@ -18,7 +18,7 @@ import { createRequire } from "node:module";
 import { homedir } from "node:os";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { CustomEditor, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import type { ImageContent } from "@earendil-works/pi-ai";
 
 /** A parsed terminal token and its source range in the original input. */
@@ -222,6 +222,40 @@ export default function imageDropExtension(pi: ExtensionAPI) {
 			pendingEditorImages.set(id, { originalText: token.value, image: imageFromPath(filePath) });
 			const replaced = pastedText.slice(0, token.start) + `[Image #${id}]` + pastedText.slice(token.end);
 			return { data: bracketed ? `\x1b[200~${replaced}\x1b[201~` : replaced };
+		});
+	});
+
+	pi.on("resources_discover", (_event, ctx) => {
+		if (ctx.mode !== "tui") return;
+
+		const createEditor = ctx.ui.getEditorComponent();
+		ctx.ui.setEditorComponent((tui, theme, keybindings) => {
+			const editor = createEditor?.(tui, theme, keybindings) ?? new CustomEditor(tui, theme, keybindings);
+			if (!("getCursor" in editor) || typeof editor.getCursor !== "function") return editor;
+			if (!("getLines" in editor) || typeof editor.getLines !== "function") return editor;
+
+			const cursorEditor = editor as typeof editor & {
+				getCursor(): { line: number; col: number };
+				getLines(): string[];
+			};
+			const handleInput = cursorEditor.handleInput.bind(cursorEditor);
+			cursorEditor.handleInput = (data: string) => {
+				const cursor = cursorEditor.getCursor();
+				const line = cursorEditor.getLines()[cursor.line] ?? "";
+				const match = line.slice(0, cursor.col).match(/\[Image #(\d+)\]$/);
+				const id = match ? Number(match[1]) : undefined;
+
+				if (match && id !== undefined && keybindings.matches(data, "tui.editor.deleteCharBackward") && pendingEditorImages.has(id)) {
+					for (let index = 0; index < match[0].length; index++) {
+						handleInput(data);
+					}
+					pendingEditorImages.delete(id);
+					return;
+				}
+
+				handleInput(data);
+			};
+			return cursorEditor;
 		});
 	});
 
